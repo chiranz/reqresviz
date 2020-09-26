@@ -1,6 +1,11 @@
 export const urlGenerated = {
   baseUrl: "0.0.0.0:3030/requests/5f684558eaca5422649d7153",
 };
+export const dbHostId = "5f6c5cb2855f6e32b840b22b";
+export const baseUrls = {
+  generateHostBaseUrl: `0.0.0.0:3030/generate-host`,
+  requestsBaseUrl: "0.0.0.0:3030/requests",
+};
 
 export const baseRequestAPI = "0.0.0.0:3030/requests";
 

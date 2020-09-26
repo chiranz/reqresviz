@@ -19,6 +19,9 @@ export default function ClickableTableRow({
   path,
   responseCode,
   timestamp,
+  header,
+  queryParams,
+  response,
 }) {
   const [showDetails, setShowDetails] = useState(false);
 
@@ -29,20 +32,65 @@ export default function ClickableTableRow({
     const time = dayjs(timeinunix);
     return time.format("dddd MMMM D YYYY");
   };
+  const getBackgroundColor = (statusCode) => {
+    const codeType = statusCode.toString().slice(0, 1);
+    const colors = {
+      blue: "#007BFF",
+      green: "#5CA846",
+      red: "#DD4B44",
+      orange: "#F8C107",
+      default: "#ffffff",
+    };
+    if (codeType === "2" || codeType === "3") {
+      return colors.green;
+    } else if (codeType === "4") {
+      return colors.orange;
+    } else if (codeType === "5") {
+      return colors.red;
+    }
+    return colors.default;
+  };
+  const getTextColor = (statusCode) => {
+    const codeType = statusCode.toString().slice(0, 1);
+    const textColors = {
+      light: "#ffffff",
+      dark: "#000000",
+    };
+    if (codeType === "2" || codeType === "3" || codeType === "5") {
+      return textColors.light;
+    }
+    return textColors.dark;
+  };
 
   const classes = useStyles();
   return (
     <>
-      <TableRow onClick={handleRowClick} className={classes.tableRow}>
-        <TableCell>{method}</TableCell>
-        <TableCell align="right">{path}</TableCell>
-        <TableCell align="right">{responseCode}</TableCell>
-        <TableCell align="right">{getFormattedTime(timestamp)}</TableCell>
+      <TableRow
+        style={{ backgroundColor: getBackgroundColor(responseCode) }}
+        onClick={handleRowClick}
+        className={classes.tableRow}
+      >
+        <TableCell style={{ color: getTextColor(responseCode) }}>
+          {method}
+        </TableCell>
+        <TableCell style={{ color: getTextColor(responseCode) }} align="right">
+          {path}
+        </TableCell>
+        <TableCell style={{ color: getTextColor(responseCode) }} align="right">
+          {responseCode}
+        </TableCell>
+        <TableCell style={{ color: getTextColor(responseCode) }} align="right">
+          {getFormattedTime(timestamp)}
+        </TableCell>
       </TableRow>
       {showDetails ? (
         <TableRow>
           <TableCell colSpan={16}>
-            <RequestResponseDetails />
+            <RequestResponseDetails
+              header={header}
+              queryParams={queryParams}
+              response={response}
+            />
           </TableCell>
         </TableRow>
       ) : null}

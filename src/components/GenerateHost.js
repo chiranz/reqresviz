@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Axios from "axios";
 import { Link } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -22,20 +23,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function GenerateHost() {
-  // const [generatedUrl, setGeneratedUrl] = useState(null);
+  const [generatedUrl, setGeneratedUrl] = useState(null);
   const [stateUrl, setStateUrl] = useState("");
-  const [generated, setGenerated] = useState(false);
-  const [uid, setUid] = useState("");
+  const [hostId, setHostId] = useState(null);
   const handleGenerate = async () => {
-    // const response = await Axios.post(baseRequestAPI, { stateUrl });
-    // const { baseUrl } = response.data;
-    // setGeneratedUrl(baseUrl);
-    // const newUid = baseUrl.split("/").pop();
-    // setUid(newUid);
-    setUid("whatever");
-    setGenerated(true);
+    const response = await Axios.post("/generate-host", {
+      baseUrl: stateUrl,
+    });
+    console.log(response);
+    const { baseUrl } = response.data;
+    setGeneratedUrl(baseUrl);
+    const newUid = baseUrl.split("/").pop();
+    setHostId(newUid);
   };
   const classes = useStyles();
+  console.log(hostId);
   return (
     <>
       <Card variant="outlined" className={classes.card}>
@@ -57,7 +59,6 @@ export default function GenerateHost() {
               value={stateUrl}
               onChange={(e) => {
                 setStateUrl(e.target.value);
-                setGenerated(false);
               }}
               placeholder="example.google.com"
             />
@@ -71,7 +72,9 @@ export default function GenerateHost() {
             </Button>
           </FormGroup>
         </FormControl>
-        <p>{generated ? <Link to={`/${uid}`}>{stateUrl}</Link> : null}</p>
+        <p>
+          {generatedUrl ? <Link to={`/${hostId}`}>{generatedUrl}</Link> : null}
+        </p>
       </Card>
     </>
   );

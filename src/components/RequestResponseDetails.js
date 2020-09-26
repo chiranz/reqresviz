@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core";
-import Axios from "axios";
-import { baseRequestAPI } from "../constant";
+import React, { useState } from "react";
+import { makeStyles, Button } from "@material-ui/core";
 import CardDisplay from "../components/CardDisplay";
-Axios.defaults.baseURL = baseRequestAPI;
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  cards: {
     display: "flex",
   },
   cardInner: {
@@ -19,35 +16,55 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "350px",
     overflowY: "scroll",
   },
+  button: {
+    marginRight: "1rem",
+  },
   hr: {
     width: "100%",
   },
 }));
 
-export default function RequestResponseDetails() {
-  const [headers, setHeaders] = useState("{header}");
-  const [body, setBody] = useState("{body}");
-  useEffect(() => {
-    const fetchWeb = async () => {
-      try {
-        const response = await Axios.get(
-          "https://jsonplaceholder.typicode.com/users"
-        );
-        console.log(response);
-        setHeaders(response.headers);
-        setBody(response.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchWeb();
-  }, []);
+export default function RequestResponseDetails({
+  response,
+  header,
+  qeuryParams,
+}) {
+  const [showRequest, setShowRequest] = useState(true);
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <CardDisplay title="Headers" content={headers} />
-      <CardDisplay title="Body" content={body} />
+    <div>
+      <Button
+        variant={showRequest ? "contained" : "outlined"}
+        color="primary"
+        onClick={() => setShowRequest(true)}
+        className={classes.button}
+      >
+        Request
+      </Button>
+      <Button
+        variant={showRequest ? "outlined" : "contained"}
+        color="primary"
+        onClick={() => {
+          setShowRequest(false);
+        }}
+        className={classes.button}
+      >
+        Response
+      </Button>
+
+      <div className={classes.cards}>
+        {showRequest ? (
+          <>
+            <CardDisplay title="Header" content={header} />
+            <CardDisplay title="Query Params" content={qeuryParams} />
+          </>
+        ) : (
+          <>
+            <CardDisplay title="Body" content={response.body} />
+          </>
+        )}
+      </div>
     </div>
   );
 }

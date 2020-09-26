@@ -6,7 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 
 const useStyles = makeStyles((theme) => ({
   cardHeader: {
-    padding: "0 1rem",
+    padding: "1rem 0 0 1rem",
   },
   card: {
     margin: "1rem",
