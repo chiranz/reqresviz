@@ -55,7 +55,7 @@ export default function RequestDetailsTable({ tableData }) {
                 path={data.reqpath}
                 responseCode={data.statusCode}
                 timestamp={data.timestamps}
-                header={data.response}
+                header={data.header}
                 queryParams={data.queryParams}
                 response={data.response}
               />

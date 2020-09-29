@@ -10,7 +10,7 @@ function App() {
   return (
     <Router>
       <Navbar />
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Switch>
           <Route exact path="/" component={LandingPage} />
           <Route exact path="/:hostId" component={RequestResponseDetailsPage} />

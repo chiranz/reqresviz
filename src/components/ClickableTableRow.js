@@ -3,7 +3,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import { makeStyles } from "@material-ui/core";
 import RequestResponseDetails from "./RequestResponseDetails";
-import dayjs from "dayjs";
+import dayjs from "dayjs"; 
 
 const useStyles = makeStyles((theme) => ({
   tableRow: {
@@ -22,6 +22,7 @@ export default function ClickableTableRow({
   header,
   queryParams,
   response,
+  body
 }) {
   const [showDetails, setShowDetails] = useState(false);
 
@@ -90,6 +91,7 @@ export default function ClickableTableRow({
               header={header}
               queryParams={queryParams}
               response={response}
+              body={body}
             />
           </TableCell>
         </TableRow>

@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
+import ReactJson from 'react-json-view'
 
 const useStyles = makeStyles((theme) => ({
   cardHeader: {
@@ -10,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     margin: "1rem",
-    width: "300px",
+    width: "400px",
     maxHeight: "350px",
     overflowY: "scroll",
   },
@@ -32,7 +33,10 @@ export default function CardDisplay({ title, content }) {
       <CardHeader className={classes.cardHeader} title={title} />
       <hr className={classes.hr} />
       <CardContent className={classes.cardContent}>
-        {JSON.stringify(content)}
+        <ReactJson src={content} name={"data"}
+        displayDataTypes={false}
+        displayObjectSize={false}
+        theme={"monokai"} ></ReactJson>
       </CardContent>
     </Card>
   );
