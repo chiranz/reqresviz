@@ -3,7 +3,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import { makeStyles } from "@material-ui/core";
 import RequestResponseDetails from "./RequestResponseDetails";
-import dayjs from "dayjs"; 
+import dayjs from "dayjs";
 
 const useStyles = makeStyles((theme) => ({
   tableRow: {
@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: "#efefef",
     },
+  },
+  tableCell: {
+    padding: "10px",
   },
 }));
 
@@ -22,7 +25,7 @@ export default function ClickableTableRow({
   header,
   queryParams,
   response,
-  body
+  body,
 }) {
   const [showDetails, setShowDetails] = useState(false);
 
@@ -67,20 +70,39 @@ export default function ClickableTableRow({
   return (
     <>
       <TableRow
+        padding="none"
         style={{ backgroundColor: getBackgroundColor(responseCode) }}
         onClick={handleRowClick}
         className={classes.tableRow}
       >
-        <TableCell style={{ color: getTextColor(responseCode) }}>
+        <TableCell
+          className={classes.tableCell}
+          style={{ color: getTextColor(responseCode) }}
+        >
           {method}
         </TableCell>
-        <TableCell style={{ color: getTextColor(responseCode) }} align="right">
+        <TableCell
+          padding="none"
+          align="right"
+          style={{ color: getTextColor(responseCode) }}
+          className={classes.tableCell}
+        >
           {path}
         </TableCell>
-        <TableCell style={{ color: getTextColor(responseCode) }} align="right">
+        <TableCell
+          padding="none"
+          align="right"
+          className={classes.tableCell}
+          style={{ color: getTextColor(responseCode) }}
+        >
           {responseCode}
         </TableCell>
-        <TableCell style={{ color: getTextColor(responseCode) }} align="right">
+        <TableCell
+          padding="none"
+          className={classes.tableCell}
+          align="right"
+          style={{ color: getTextColor(responseCode), paddingRight: "10px" }}
+        >
           {getFormattedTime(timestamp)}
         </TableCell>
       </TableRow>

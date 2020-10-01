@@ -9,10 +9,11 @@ import FormLabel from "@material-ui/core/FormLabel";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 
-import { makeStyles } from "@material-ui/core";
+import { CircularProgress, makeStyles } from "@material-ui/core";
 import validator from "validator";
 
 const useStyles = makeStyles((theme) => ({
+  ...theme.formStyles,
   textField: {
     marginBottom: "1rem",
   },
@@ -25,8 +26,10 @@ const useStyles = makeStyles((theme) => ({
 export default function GenerateHost() {
   const [generatedUrl, setGeneratedUrl] = useState(null);
   const [stateUrl, setStateUrl] = useState("");
+  const [isGeneratingUrl, setIsGeneratingUrl] = useState(false);
   const [hostId, setHostId] = useState(null);
   const handleGenerate = async () => {
+    setIsGeneratingUrl(true);
     const response = await Axios.post("/generate-host", {
       baseUrl: stateUrl,
     });
@@ -35,6 +38,7 @@ export default function GenerateHost() {
     setGeneratedUrl(baseUrl);
     const newUid = baseUrl.split("/").pop();
     setHostId(newUid);
+    setIsGeneratingUrl(false);
   };
   const classes = useStyles();
   console.log(hostId);
@@ -66,9 +70,13 @@ export default function GenerateHost() {
               onClick={handleGenerate}
               variant="contained"
               color="secondary"
-              disabled={!validator.isURL(stateUrl)}
+              disabled={!validator.isURL(stateUrl) || isGeneratingUrl}
+              className={classes.button}
             >
               Generate
+              {isGeneratingUrl && (
+                <CircularProgress size={30} className={classes.progress} />
+              )}
             </Button>
           </FormGroup>
         </FormControl>

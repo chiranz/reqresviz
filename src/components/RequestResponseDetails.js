@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles, Button } from "@material-ui/core";
 import CardDisplay from "../components/CardDisplay";
-import ReactJson from 'react-json-view';
 
 const useStyles = makeStyles((theme) => ({
   cards: {
@@ -29,7 +28,7 @@ export default function RequestResponseDetails({
   response,
   header,
   qeuryParams,
-  body
+  body,
 }) {
   const [showRequest, setShowRequest] = useState(true);
   const classes = useStyles();

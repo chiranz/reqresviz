@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -11,6 +11,10 @@ import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
 import ClickableTableRow from "./ClickableTableRow";
 import CenteredLoading from "./CenteredLoading";
+import { useQuery } from "react-query";
+import Typography from "@material-ui/core/Typography";
+import CenteredTableCell from "./CenteredTableCell";
+import Axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: { marginTop: "2rem" },
@@ -26,8 +30,53 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RequestDetailsTable({ tableData }) {
+export default function RequestDetailsTable({ hostId }) {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  async function loadData(hostId, page, limit) {
+    const res = await Axios.get(
+      `/generate-host/${hostId}?page=${page}&limit=${limit}`
+    );
+    const { data } = res;
+    const result = [];
+
+    for (let i = 0; i < data.length; i++) {
+      const currData = data[i];
+      let {
+        type,
+        response,
+        reqpath,
+        response: { statusCode },
+        timestamps,
+        header,
+        queryParams,
+      } = currData;
+      const formattedData = {
+        type,
+        response,
+        reqpath,
+        statusCode,
+        timestamps,
+        header,
+        queryParams,
+      };
+      result.push(formattedData);
+    }
+
+    return result;
+  }
+
+  const { data, isLoading, error } = useQuery(
+    [page, rowsPerPage],
+    async () => await loadData(hostId, page + 1, rowsPerPage)
+  );
+
+  const handleChangeRowsPerPage = (e) => {
+    setRowsPerPage(parseInt(e.target.value, 10));
+    setPage(0);
+  };
   const classes = useStyles();
+  console.log(page);
 
   return (
     <TableContainer className={classes.tableContainer} component={Paper}>
@@ -46,45 +95,53 @@ export default function RequestDetailsTable({ tableData }) {
             </TableCell>
           </TableRow>
         </TableHead>
-        {tableData.length > 0 ? (
+        {data && data.length ? (
           <TableBody>
-            {tableData.map((data, i) => (
+            {data.map((d, i) => (
               <ClickableTableRow
                 key={i}
-                method={data.type}
-                path={data.reqpath}
-                responseCode={data.statusCode}
-                timestamp={data.timestamps}
-                header={data.header}
-                queryParams={data.queryParams}
-                response={data.response}
+                method={d.type}
+                path={d.reqpath}
+                responseCode={d.statusCode}
+                timestamp={d.timestamps}
+                header={d.header}
+                queryParams={d.queryParams}
+                response={d.response}
               />
             ))}
           </TableBody>
+        ) : isLoading ? (
+          <CenteredTableCell>
+            <CenteredLoading />
+          </CenteredTableCell>
+        ) : error ? (
+          <CenteredTableCell>
+            <Typography variant="h6" color="initial">
+              Opps!! Error Occured
+            </Typography>
+          </CenteredTableCell>
         ) : (
-          <TableBody>
-            <TableRow>
-              <TableCell colSpan={16}>
-                <CenteredLoading />
-              </TableCell>
-            </TableRow>
-          </TableBody>
+          <CenteredTableCell>
+            <Typography variant="h6" color="initial">
+              No Data
+            </Typography>
+          </CenteredTableCell>
         )}
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+              rowsPerPageOptions={[5, 10, 25]}
               colSpan={16}
-              count={15}
-              rowsPerPage={5}
-              page={0}
+              // TODO: get data from server and change tabledata count
+              count={100}
+              rowsPerPage={rowsPerPage}
+              page={page}
               SelectProps={{
                 inputProps: { "aria-label": "rows per page" },
                 native: true,
               }}
-              // onChangePage={handleChangePage}
-              // onChangeRowsPerPage={handleChangeRowsPerPage}
-              // ActionsComponent={TablePaginationActions}
+              onChangePage={(_, newPage) => setPage(newPage)}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
             />
           </TableRow>
         </TableFooter>
